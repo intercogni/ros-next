@@ -9,7 +9,6 @@ import React, {
     useState
 } from 'react'
 import { RosContext, RosLib } from '../common/components'
-
 import { getRosObject } from './lib/ros-instance-manager'
 
 interface RosConnectionProps {

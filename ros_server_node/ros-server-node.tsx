@@ -9,13 +9,13 @@ import { RosLib, useRememberedRos } from '../common/components'
 import { Fragment, useEffect } from 'react'
 
 export default function RosServiceServer({
-    name,
+    service_name,
     service_type,
-    spinner
+    callback
 }: {
-    name         : any
+    service_name : any
     service_type : any
-    spinner      : any
+    callback     : any
 }) {
     // Remember the ROS mentioned in the wrapper of this element
     const RosInstance = useRememberedRos()
@@ -25,12 +25,12 @@ export default function RosServiceServer({
         // Create a new ROS Service instance
         const Service = new RosLib.Service({
             ros         : RosInstance,
-            name        : name,
+            name        : service_name,
             serviceType : service_type
         })
 
         // Advertise/Spin server to Local Area Network
-        Service.advertise(RosLib.wrapServerCallback(spinner))
+        Service.advertise(RosLib.wrapServerCallback(callback))
 
         // Stop server advertisement in Local Area Network
         return function () {

@@ -1,10 +1,9 @@
 import { createContext, useContext } from 'react'
-import RosLibCore from './roslib'
 
-export const RosLib = RosLibCore
+import * as ROSLIB from 'roslib'
+export const RosLib = ROSLIB
 
 export const RosContext = createContext<typeof RosLib.Ros>(undefined)
-
 export function useRememberedRos() {
     const RosInstance = useContext(RosContext)
     if (RosInstance === undefined) {

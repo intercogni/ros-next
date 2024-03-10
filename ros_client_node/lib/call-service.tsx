@@ -5,12 +5,10 @@
  * ╰--> @intercogni-ros-react | @Barunastra_ITS | @Intercogni
  **/
 
+import ROSLIB from 'roslib'
 import { RosLib } from '../../common/components'
 
-export default function callService<
-    RequestType  = object,
-    ResponseType = ROSLIB.ServiceResponse
->({
+export default function callService({
     ros,
     name,
     service_type,
