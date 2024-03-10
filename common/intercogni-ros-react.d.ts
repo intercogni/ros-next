@@ -1,1 +1,1 @@
-declare module 'roslib';
+declare module 'roslib'

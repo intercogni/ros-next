@@ -1,4 +1,2 @@
-import callService from "./call-service";
-export {
-    callService
-};
+import callService from './call-service'
+export { callService }

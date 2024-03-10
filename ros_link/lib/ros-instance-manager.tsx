@@ -1,16 +1,13 @@
-import { 
-    RosContext,
-    RosLib
-} from '../../common/components';
-import { v4 as uuidv4 } from 'uuid';
+import { RosContext, RosLib } from '../../common/components'
+import { v4 as uuidv4 } from 'uuid'
 
-type RosProps = ConstructorParameters<typeof RosLib.Ros>[0];
-type RosPropsWithoutUrl = Omit<RosProps, 'url'>;
+type RosProps           = ConstructorParameters<typeof RosLib.Ros>[0]
+type RosPropsWithoutUrl = Omit<RosProps, 'url'>
 interface RosInstanceHolder {
-    [url: string]: typeof RosLib.Ros;
+    [url: string] : typeof RosLib.Ros
 }
 
-const RosInstances: RosInstanceHolder = {};
+const RosInstances: RosInstanceHolder = {}
 
 /**
  * Creates a ROS instance and stores it by its URL.
@@ -20,26 +17,29 @@ const RosInstances: RosInstanceHolder = {};
  * @param options Ros constructor parameters, without the URL.
  * @return Ros instance
  */
-export const getRosObject = (url: string, options: RosPropsWithoutUrl = {}): typeof RosLib.Ros => {
-    let rosInstance = new RosLib.Ros(options);
-    rosInstance.uid = uuidv4();
+export const getRosObject = (
+    url     : string,
+    options : RosPropsWithoutUrl = {}
+): typeof RosLib.Ros => {
+    let rosInstance     = new RosLib.Ros(options)
+        rosInstance.uid = uuidv4()
     if (RosInstances[url] === undefined) {
         // cache miss, store
-        RosInstances[url] = rosInstance;
+        RosInstances[url] = rosInstance
     } else {
-        rosInstance = RosInstances[url];
+        rosInstance = RosInstances[url]
     }
 
-    return rosInstance;
-};
+    return rosInstance
+}
 
 export const finalizeRosConnection = (ros: typeof RosLib.Ros, url: string) => {
-    ros.close();
+    ros.close()
 
     if (ros.uid === undefined || ros.uid === '') {
-        return;
+        return
     }
 
     // Remove this tracking uid and the instance
-    delete RosInstances[url];
-};
+    delete RosInstances[url]
+}

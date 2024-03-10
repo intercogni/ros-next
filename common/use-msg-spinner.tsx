@@ -1,7 +1,7 @@
-import { useCallback } from 'react';
+import { useCallback } from 'react'
 
 export default function useMsgSpinner(setMsg: any) {
     return useCallback((MsgStream: any) => {
-        setMsg(MsgStream);
-    }, []);
+        setMsg(MsgStream)
+    }, [])
 }
