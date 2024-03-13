@@ -1,5 +1,5 @@
 /**
- * ╭╴RosPublication
+ * ╭╴RosPublisherNode
  * ╰--> A ROS Component used to Publish Data into ROS Topics via Websocket
  * ╭╴Oportunitas (Taib Izzat Samawi); 16/Nov/2023
  * ╰--> @intercogni-ros-react | @Barunastra_ITS | @Intercogni
@@ -8,14 +8,13 @@
 import { useRememberedRos, RosLib } from '../common/components'
 import { useEffect, useState } from 'react'
 
-export default function RosPublication({
+export default function RosPublisherNode({
     topic,
     msg_type,
     msg,
     throttle_rate,
     latch,
     queue_length,
-    queue_size,
     continuous_stream,
     children,
     style,
@@ -27,7 +26,6 @@ export default function RosPublication({
     throttle_rate     ?: any
     latch             ?: any
     queue_length      ?: any
-    queue_size        ?: any
     continuous_stream ?: boolean
     children          ?: React.ReactNode
     style             ?: any
@@ -44,15 +42,16 @@ export default function RosPublication({
         messageType  : `${msg_type}`,
         throttleRate : `${throttle_rate}`,
         latch        : `${latch}`,
-        queue_length : `${queue_length}`,
-        queue_size   : `${queue_size}`
+        queue_length : `${queue_length}`
     })
 
     useEffect(() => {
         if (continuous_stream === true) {
             const delay_period = Math.round(1000 / (throttle_rate || 1))
             const timer        = setTimeout(() => {
-                Topic.publish(msg)
+                const Cur_Msg = new RosLib.Message(msg)
+                Topic.publish(Cur_Msg)
+                console.log(`publishing ${Cur_Msg.data} to ${topic}`)
                 setTimerTick(!timer_tick)
             }, delay_period)
             return function () {
@@ -64,6 +63,7 @@ export default function RosPublication({
     useEffect(() => {
         if (continuous_stream !== true) {
             Topic.publish(msg)
+            console.log(`publishing msg to ${RosInstance.url}`)
         }
     }, [msg])
 

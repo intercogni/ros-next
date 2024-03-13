@@ -51,10 +51,12 @@ export default function RosConnection({
             props.user,
             props.password
         )
+        
         connect(rosRef.current, url, props.user, props.password)
-        return () => {
-            closeConnection(rosRef.current)
-        }
+
+        // return () => {
+        //     closeConnection(rosRef.current)
+        // }
     }, [
         url,
         props.autoConnect,
@@ -88,13 +90,13 @@ export function setupConnectionCallbacks(
     password           = DefaultRosProps.password
 ): void {
     ros.on('connection', () => {
-        //console.log('Connected');
+        console.log(`Established ROS connection to ${url}`);
     })
     ros.on('close', () => {
-        //console.log('Disconnected');
+        console.log(`Closed ROS connection to ${url}`);
     })
     ros.on('error', () => {
-        //console.log('Connection error');
+        console.log(`Error establishing ROS connection to ${url}`);
 
         // Attempt to reconnect
         if (autoConnect) {

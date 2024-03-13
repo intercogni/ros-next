@@ -11,15 +11,15 @@ import { Fragment, useEffect } from 'react'
 export default function RosSubscription({
     topic,
     msg_type,
-    msg_spinner,
+    callback,
     children,
     style
 }: {
-    topic        : string
-    msg_type     : string
-    msg_spinner  : any
-    style       ?: any
-    children     : React.ReactNode
+    topic     : string
+    msg_type  : string
+    callback  : any
+    style    ?: any
+    children ?: React.ReactNode
 }) {
     // Remember the ROS mentioned in the wrapper of this element
     const RosInstance = useRememberedRos()
@@ -30,33 +30,14 @@ export default function RosSubscription({
             name        : `${topic}`,
             messageType : `${msg_type}`
         })
+        console.log("Initiated topic to subscribe")
 
         Topic.subscribe(function (received_msg: any) {
-            msg_spinner(received_msg)
+            callback(received_msg)
         })
-
-        return function () {
-            Topic.unsubscribe()
-        }
+        console.log("Subscribed to topic")
     })
 
     // Return all the children of this element
     return <Fragment />
 }
-
-//const RosInstance = rememberRos();
-//
-//    useEffect(() => {
-//        // Create a ROS topic to link with
-//        const Topic = new RosLib.Topic(
-//            { ros: RosInstance, name: {topic}, messageType : {msg_type} }
-//        );
-//
-//        // Subscribe to the topic and set <msg> to be the steamed data
-//        Topic.subscribe(function(received_msg: any) {
-//            console.log(received_msg);
-//        });
-//
-//        // Unsubscribe to the topic after data is obtained
-//        return (function() { Topic.unsubscribe(); });
-//    }, []);
