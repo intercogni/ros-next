@@ -2,7 +2,7 @@
  * RosSubscriberNode
  * ╰--> A ROS Component used to Subscribe to a ROS Topic via Websocket
  * ╭╴Oportunitas (Taib Izzat Samawi); 16/Nov/2023
- * ╰--> @intercogni-ros-react | @Barunastra_ITS | @Intercogni
+ * ╰--> @ros_react | @oportunitas | @intercogni
  **/
 
 import { RosLib, useRememberedRos } from '../common/components'
@@ -25,24 +25,24 @@ export default function RosSubscriberNode({
 }) {
     // Remember the ROS mentioned in the wrapper of this element
     const RosInstance = useRememberedRos()
-    
+
     useEffect(() => {
+        const period = (rate === undefined) ? (1) : Math.round(1000 / rate)
+        console.log(rate)
+        console.log(period)
+
         const Topic = new RosLib.Topic({
-            ros         : RosInstance,
-            name        : `${topic}`,
-            messageType : `${msg_type}`
+            ros           : RosInstance,
+            name          : `${topic}`,
+            messageType   : `${msg_type}`,
+            throttle_rate : period
         })
-        console.log("Initiated topic to subscribe")
-
-        Topic.subscribe(function (received_msg: any) {
-            callback(received_msg)
+        Topic.subscribe((received_msg: any) => { callback(received_msg) })
+        
+        return (() => {
+            Topic.unsubscribe()
         })
-        console.log("Subscribed to topic")
-
-        if (rate !== undefined) {
-            setTimeout(() => {}, (1000 / rate))
-        }
-    }, [RosInstance])
+    }, [RosInstance, rate])
 
     // Return all the children of this element
     return <Fragment />
