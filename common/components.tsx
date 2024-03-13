@@ -10,7 +10,7 @@ export function useRememberedRos() {
         throw new Error(
             'Intercogni ROS React-> Components must be wrapped by a <RosLink> element'
         )
-    }
+    } 
 
     return RosInstance
 }

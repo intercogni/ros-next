@@ -19,50 +19,49 @@ interface RosConnectionProps {
     password           ?: string
 }
 
-const DefaultRosProps: Required<RosConnectionProps> = {
-    url                : 'ws://127.0.0.1:9090',
-    autoConnect        : false,
-    autoConnectTimeout : 1000,
-    user               : '',
-    password           : ''
-}
-
 export default function RosConnection({
+    url,
+    auto_connect,
+    auto_connect_timeout,
+    user,
+    password,
     children,
     ...userProps
-}: PropsWithChildren<Partial<RosConnectionProps>>) {
-    const props         = { ...DefaultRosProps, ...userProps }
-    const [url, setUrl] = useState(props.url)
+}: {
+    url                   : string
+    auto_connect         ?: boolean
+    auto_connect_timeout ?: number
+    user                 ?: string
+    password             ?: string
+    children              : any,
+}) {
     const rosRef        = useRef<typeof RosLib.Ros>(new RosLib.Ros({}))
+    const ThisRos       = useContext(RosContext)
 
-    // Trigger update if URL changes
-    useEffect(() => {
-        setUrl(props.url)
-    }, [props.url])
-
+    const [tick, setTick] = useState(false)
+    setInterval(() => {
+        setTick(!tick)
+    }, 500)
+    
     useEffect(() => {
         rosRef.current = getRosObject(url)
 
         setupConnectionCallbacks(
             rosRef.current,
             url,
-            props.autoConnect,
-            props.autoConnectTimeout,
-            props.user,
-            props.password
+            auto_connect,
+            auto_connect_timeout,
+            user,
+            password
         )
-        
-        connect(rosRef.current, url, props.user, props.password)
-
-        // return () => {
-        //     closeConnection(rosRef.current)
-        // }
+        connect(rosRef.current, url, user, password)
     }, [
         url,
-        props.autoConnect,
-        props.autoConnectTimeout,
-        props.password,
-        props.user
+        auto_connect,
+        auto_connect_timeout,
+        password,
+        user,
+        tick
     ])
 
     return (
@@ -72,25 +71,16 @@ export default function RosConnection({
     )
 }
 
-RosConnection.propTypes = {
-    children           : PropTypes.node.isRequired,
-    url                : PropTypes.string.isRequired,
-    autoConnect        : PropTypes.bool,
-    autoConnectTimeout : PropTypes.number,
-    user               : PropTypes.string,
-    password           : PropTypes.string
-}
-
 export function setupConnectionCallbacks(
     ros : typeof RosLib.Ros,
-    url                = DefaultRosProps.url,
-    autoConnect        = DefaultRosProps.autoConnect,
-    autoConnectTimeout = DefaultRosProps.autoConnectTimeout,
-    user               = DefaultRosProps.user,
-    password           = DefaultRosProps.password
+    url : any,
+    auto_connect ?: any,
+    auto_connect_timeout ?: any,
+    user ?: any,
+    password ?: any
 ): void {
     ros.on('connection', () => {
-        console.log(`Established ROS connection to ${url}`);
+        console.log(`Established ROS connection to ${url}`)
     })
     ros.on('close', () => {
         console.log(`Closed ROS connection to ${url}`);
@@ -99,19 +89,19 @@ export function setupConnectionCallbacks(
         console.log(`Error establishing ROS connection to ${url}`);
 
         // Attempt to reconnect
-        if (autoConnect) {
+        if (auto_connect) {
             setTimeout(() => {
                 connect(ros, url, user, password)
-            }, autoConnectTimeout)
+            }, auto_connect_timeout)
         }
     })
 }
 
 export function connect(
     ros : typeof RosLib.Ros,
-    url      = DefaultRosProps.url,
-    user     = DefaultRosProps.user,
-    password = DefaultRosProps.password
+    url : string,
+    user ?: string,
+    password ?: string
 ): void {
     ros.connect(url)
 }
