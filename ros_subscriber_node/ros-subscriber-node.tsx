@@ -28,9 +28,6 @@ export default function RosSubscriberNode({
 
     useEffect(() => {
         const period = (rate === undefined) ? (1) : Math.round(1000 / rate)
-        console.log(rate)
-        console.log(period)
-
         const Topic = new RosLib.Topic({
             ros           : RosInstance,
             name          : `${topic}`,
