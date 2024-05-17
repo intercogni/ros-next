@@ -1,4 +1,4 @@
-import RosLinkProps from './ros-link-props'
+import RosLinkProps from './ros_link_props'
 
 const DefaultRosLinkProps: Required<RosLinkProps> = {
     url                  : 'ws://127.0.0.1.9090',
